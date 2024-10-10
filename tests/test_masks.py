@@ -28,3 +28,11 @@ def test_get_mask_account(mask_account):
 )
 def test_get_mask_card_number(string, expected_result):
     assert get_mask_card_number(string) == expected_result
+
+@pytest.mark.parametrize('acc_number, expected_a', [
+    ('73654108430135874305', '**4305'),
+])
+
+def test_get_mask_account(acc_number, expected_a):
+    assert get_mask_account(acc_number) == expected_a
+
