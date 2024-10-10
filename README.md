@@ -20,6 +20,9 @@ git clone https://github.com/evserova/project.git
 ```
 pip install -r requirements.txt
 ```
+## Тесты.
+* Содержит тесты функционала.
+
 
 ## Использование:
 1. Модуль masks.py принимает на вход номер карты или счета и маскирует их.
