@@ -1,21 +1,24 @@
 import json
 import logging
+import sys
+from pathlib import Path
+from typing import List
 
-logger = logging.getLogger(__name__)
-file_handler = logging.FileHandler(f"logs.utils.log", "w")
-file_formatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s %(asctime)s %(message)s")
-file_handler.setFormatter(file_formatter)
-logger.addHandler(file_handler)
-logger.setLevel(logging.INFO)
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-
-def get_info(path) -> list:
-    """Функция получения объекта Python от JSON-файла"""
+def get_transactions(path_to_file: Path) -> List:
+    """Функция, возвращающая из json-файла данные о транзакциях"""
     try:
-        logger.info("Попытка преобразовать файл")
-        with open(path) as file:
-            py_file = json.load(file)
-            return py_file
-    except (FileNotFoundError, json.JSONDecodeError):
-        logger.error("Файл не найден")
-        return ["Ошибка"]
+        with open(path_to_file) as json_file:
+            try:
+                # logger.info(f"Открываем json-файл {path_to_file}")
+                transactions = json.load(json_file)
+                return transactions
+            except json.JSONDecodeError:
+                # logger.error("Ошибка декодирования JSON")
+                print("Ошибка декодирования JSON")
+                return []
+    except FileNotFoundError:
+        # logger.error("Файл не найден")
+        print("Файл не найден")
+        return []
