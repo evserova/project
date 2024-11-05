@@ -31,7 +31,7 @@ def get_transactions_info_json(json_file: str) -> list[Any]:
             logger.info("Путь до файла json верный")
             transactions_info = json.load(file)
             return transactions_info
-        except:
+        except BaseException:
             logger.warning("Импортируемый список пуст или отсутствует.")
             return []
 
