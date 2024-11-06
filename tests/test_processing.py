@@ -3,9 +3,6 @@ import pytest
 
 from src.processing import filter_by_state, sort_by_date
 
-def test_filter_by_state(test_initial_list):
-    assert filter_by_state(initial_list, state=test_initial_list)
-
 
 @pytest.mark.parametrize(
     "user_list, user_state, expected",

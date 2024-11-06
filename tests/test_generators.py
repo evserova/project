@@ -1,43 +1,8 @@
-from typing import Any
-
 import pytest
 
 from src.generators import (card_number_generator, filter_by_currency,
                             transaction_descriptions)
 
-
-def test_card_number_generator() -> Any:
-    """Функция тестирует генератор номеров карт"""
-    card_number = card_number_generator(9999999999999999, 9999999999999999)
-    try:
-        assert next(card_number) == "9999 9999 9999 9999"
-    except AssertionError:
-        print("Введены некорректные данные")
-
-
-for card_number in card_number_generator(9999999999999999, 9999999999999999):
-    print(card_number)
-
-
-def test_transaction_descriptions():
-        transactions = [
-            {"description": "Перевод организации"},
-            {"description": "Перевод со счета на счет"},
-            {"description": "Перевод со счета на счет"},
-            {"description": "Перевод с карты на карту"},
-            {"description": "Перевод организации"},
-        ]
-
-        descriptions = list(transaction_descriptions(transactions))
-        expected = [
-            "Перевод организации",
-            "Перевод со счета на счет",
-            "Перевод со счета на счет",
-            "Перевод с карты на карту",
-            "Перевод организации"
-        ]
-
-        assert descriptions == expected
 
 def test_right_currency():
     transactions = [
@@ -141,17 +106,11 @@ def test_card_number_generator(start, stop, expected):
 
 
 @pytest.mark.parametrize('index, expected', [(0, 'Перевод организации'), (1, 'Перевод со счета на счет')])
-
 def test_transaction_descriptions_3(index, expected):
-
     transactions = [
-
         {'description': 'Перевод организации'},
-
         {'description': 'Перевод со счета на счет'}
-
     ]
-
     descriptions = list(transaction_descriptions(transactions))
 
     assert descriptions[index] == expected
@@ -188,11 +147,10 @@ def transactions():
             "description": "Перевод со счета на счет",
             "from": "Счет 19708645243227258542",
             "to": "Счет 75651667383060284188"
-        }
+    }
     ]
 
 
 def test_filter_by_currency(transactions):
     result = filter_by_currency(transactions, "RUB")
     assert list(result) == []
-
