@@ -26,10 +26,11 @@ logger.addHandler(file_handler)
 def get_transactions_info_json(json_file: str) -> list[Any]:
     """Функция принимает на вход путь до JSON-файла и возвращает данные"""
 
-    with open(json_file, "r", encoding="utf-8") as file:
+    with open(json_file, "r", encoding="utf-8") as f:
+
         try:
             logger.info("Путь до файла json верный")
-            transactions_info = json.load(file)
+            transactions_info = json.load(f)
             return transactions_info
         except BaseException:
             logger.warning("Импортируемый список пуст или отсутствует.")

@@ -3,6 +3,8 @@ from src.processing import filter_by_state, sort_by_date
 from src.viborka1 import transactions_csv, transactions_xlsx
 from src.trans import trans_search
 from src.utils import get_transactions_info_json
+from src.widget import get_date, mask_account_card
+from source import path_data, path_csv, path_xlsx
 
 
 def get_file_selection():
@@ -20,15 +22,15 @@ def get_file_selection():
 
     if user_input_file == "1":
         print("Для обработки выбран JSON-файл.\n")
-        file_use = get_transactions_info_json("E:/pycharm_project/Project3/data/operations.json")
+        file_use = get_transactions_info_json(path_data)
         return file_use
     elif user_input_file == "2":
         print("Для обработки выбран CSV-файл.\n")
-        file_use = transactions_csv("E:/pycharm_project/Project3/data/transactions.csv")
+        file_use = transactions_csv(path_csv)
         return file_use
     elif user_input_file == "3":
         print("Для обработки выбран XLSX-файл.\n")
-        file_use = transactions_xlsx("E:/pycharm_project/Project3/data/transactions_excel.xlsx")
+        file_use = transactions_xlsx(path_xlsx)
         return file_use
     else:
         return "Введен некорректный номер"
@@ -79,7 +81,7 @@ def sort_trans_date(file_list):
         return "Некорректный ввод!"
 
 
-def rub_transaction(transactions):
+def rub_transactions(transactions):
     print("Выводить только рублевые транзакции? Да/Нет")
     input_user_currency = input("Ввод:\n").upper()
     if user_input_file == "1":
@@ -93,7 +95,9 @@ def rub_transaction(transactions):
             return "Некорректный ввод!"
     elif user_input_file == "2" or user_input_file == "3":
         if input_user_currency == "ДА":
-            data = filter_by_curr_csv(transactions, "RUB")
+            print("DEBUG",
+                  transactions)
+            data = filter_by_currency(transactions, "RUB")
             return list(data)
         elif input_user_currency == "НЕТ":
             data = transactions
@@ -126,37 +130,40 @@ def result(file_list: list):
     else:
         print(f"Всего банковских операций в выборке: {len(file_list)}\n")
 
-    for transaction in file_list:
-        date = get_date(transaction.get("date"))
+    for transactions in file_list:
+        for transaction in transactions:
+            date = get_date(transaction.get("date"))
 
-        try:
-            mask_from = mask_account_card(transaction["from"])
-            print(f"{date} {transaction['description']} {str(mask_from)} -> ", end="")
-        except KeyError:
-            print(f"{date} {transaction['description']} ", end="")
-        except AttributeError:
-            print(f"{date} {transaction['description']} ", end="")
+            try:
+               if type(transaction["from"])==str:
+                mask_from = mask_account_card(transaction["from"])
+                print(f"{date} {transaction['description']} {str(mask_from)} -> ", end="")
+            except KeyError:
+                print(f"{date} {transaction['description']} ", end="")
+            except AttributeError:
+                print(f"{date} {transaction['description']} ", end="")
 
-        mask_to = mask_account_card(transaction["to"])
-        try:
-            amount = transaction["amount"]
-        except KeyError:
-            amount = transaction["operationAmount"]["amount"]
-        try:
-            currency = transaction["currency_name"]
-        except KeyError:
-            currency = transaction["operationAmount"]["currency"]["name"]
-        print(f"{mask_to} Сумма: {amount} {currency}")
+            mask_to = mask_account_card(transaction["to"])
+            try:
+                amount = transaction["amount"]
+            except KeyError:
+                amount = transaction["operationAmount"]["amount"]
+            try:
+                currency = transaction["currency_name"]
+            except KeyError:
+                currency = transaction["operationAmount"]["currency"]["name"]
+            print(f"{mask_to} Сумма: {amount} {currency}")
 
 
 def main():
     file_selection = get_file_selection()
     status = entering_the_status(file_selection)
     date = sort_trans_date(status)
-    rub_transactions = rub_transaction(date)
-    data = filter_search_word(rub_transactions)
+    transaction = rub_transactions(date)
+    data = filter_search_word(transaction)
     result(data)
 
 
 if __name__ == "__main__":
     main()
+    

@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Generator, Any
 
 transactions = (
     [
@@ -81,16 +81,18 @@ transactions = (
 )
 
 
-def filter_by_currency(transactions: list[dict], cod_curr: str) -> Generator[dict, None, None]:
+def filter_by_currency(transactions: list[dict], cod_curr: str, cod_currency: Any = None) -> Generator[dict, None, None]:
     """Генератор - принимает список словарей и возвращает операции, в которых указана заданная валюта."""
     for key in transactions:
-        if key["operationAmount"]["currency"]["code"] == cod_curr:
-            yield key
+        yield key
+
+        # else:
+        # raise StopIteration("нет данных")
 
 
-usd_transaction = filter_by_currency(transactions, "USD")
+usd_transactions = filter_by_currency(transactions, "USD")
 for transac in range(3):
-    print(next(usd_transaction))
+    print(next(usd_transactions))
 
 
 def transaction_descriptions(transactions):
